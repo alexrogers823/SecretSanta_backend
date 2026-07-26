@@ -31,11 +31,12 @@ def create_user():
     data = request.get_json(silent=True) or {}
     name = data.get("name")
     email = data.get("email")
+    address = data.get("address")
 
-    if not name or not email:
-        return jsonify({"error": "name and email are required"}), 400
+    if not name or not email or not address:
+        return jsonify({"error": "name, email, and address are required"}), 400
 
-    user = User(name=name, email=email)
+    user = User(name=name, email=email, address=address)
     db.session.add(user)
     try:
         db.session.commit()
@@ -52,12 +53,14 @@ def replace_user(user_id):
     data = request.get_json(silent=True) or {}
     name = data.get("name")
     email = data.get("email")
+    address = data.get("address")
 
-    if not name or not email:
-        return jsonify({"error": "name and email are required"}), 400
+    if not name or not email or not address:
+        return jsonify({"error": "name, email, and address are required"}), 400
 
     user.name = name
     user.email = email
+    user.address = address
     try:
         db.session.commit()
     except IntegrityError:
@@ -76,6 +79,8 @@ def update_user(user_id):
         user.name = data["name"]
     if "email" in data:
         user.email = data["email"]
+    if "address" in data:
+        user.address = data["address"]
 
     try:
         db.session.commit()
