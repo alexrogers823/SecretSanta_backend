@@ -10,6 +10,7 @@ class User(db.Model):
     name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), nullable=False, unique=True)
     address = db.Column(db.String(255), nullable=False)
+    assigned_to_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
 
     gifts = db.relationship(
         "Gift",
@@ -17,6 +18,11 @@ class User(db.Model):
         cascade="all, delete-orphan",
         order_by="Gift.position",
         lazy=True,
+    )
+    assigned_to = db.relationship(
+        "User",
+        remote_side=[id],
+        foreign_keys=[assigned_to_id],
     )
 
     def to_dict(self):
